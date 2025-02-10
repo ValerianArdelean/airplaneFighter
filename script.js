@@ -85,7 +85,7 @@ function bullets() {
 				l.innerHTML = "GAME OVER!";
 				return;
 			}
-			let boolet = Math.floor(Math.random() * (29 - 10 + 1)) + 10;
+			let boolet = Math.floor(Math.random() * (28 - 11 + 1)) + 11;
 			selectCell(10, boolet).classList.add("color");
 			for (let i = 10; i <= 23; ++i) {
 				setTimeout(() => {

@@ -37,6 +37,7 @@ main {
 	width: 1000px;
 	height: 700px;
 	border: 1px solid #C75050;
+	border-radius: 10px;
 	margin: auto;
 	margin-top: 10%;
 	display: flex;
