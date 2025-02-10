@@ -19,7 +19,7 @@ function createCells() {
 createCells();
 let lines = 17;
 let columns = 21;
-let lives = 10;
+let lives = Number(10);
 
 function processLines(n) {
 	if (lives <= 0) {
@@ -82,6 +82,7 @@ function bullets() {
 	for (let j = 0; j < 100000; ++j) {
 		setTimeout(() => {
 			if (lives <= 0) {
+				l.innerHTML = "GAME OVER!";
 				return;
 			}
 			let boolet = Math.floor(Math.random() * (29 - 10 + 1)) + 10;
@@ -92,26 +93,19 @@ function bullets() {
 					if (selectCell(i + 1, boolet).classList.contains("color")) {
 						--lives;
 						l.innerHTML = `lives: ${lives}`;
-						if (lives <= 0) {
-							gameOver = true; // ✅ Prevent further bullets
-							l.innerHTML = "GAME OVER!";
-							return;
-						}
 					}
 					selectCell(i + 1, boolet).classList.add("color");
-				}, (i - 10) * 150);
+				}, (i - 10) * 140);
 			}
-		}, j * 600);
+		}, j * 400);
 	}
 }
 bullets();
 
 document.addEventListener('keydown', function(event) {
 	if(event.keyCode == 37) {
-		//alert('Left was pressed');
 		processColumns(-1);
 	} else if(event.keyCode == 39) {
-		//alert('Right was pressed');
 		processColumns(1);
 	} else if (event.keyCode == 38) {
 		processLines(-1)
