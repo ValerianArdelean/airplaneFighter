@@ -113,9 +113,3 @@ document.addEventListener('keydown', function(event) {
 		processLines(1)
 	}
 });
-
-
-			   
-
-
-
