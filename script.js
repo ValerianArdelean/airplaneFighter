@@ -106,6 +106,20 @@ function bullets() {
 }
 bullets();
 
+document.addEventListener('keydown', function(event) {
+	if(event.keyCode == 37) {
+		//alert('Left was pressed');
+		processColumns(-1);
+	} else if(event.keyCode == 39) {
+		//alert('Right was pressed');
+		processColumns(1);
+	} else if (event.keyCode == 38) {
+		processLines(-1)
+	} else if (event.keyCode == 40) {
+		processLines(1)
+	}
+});
+
 
 			   
 
