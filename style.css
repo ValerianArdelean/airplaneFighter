@@ -8,6 +8,27 @@
 	text-align: center;
 }
 
+.flex {
+	display: flex;
+}
+
+body {
+	flex-direction: column;
+	height: 100vh;
+	background-color: Moccasin;
+}
+
+main {
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	height: 700px;
+	flex-grow: 1;
+}
+
+footer {
+	margin-top: auto;
+}
 
 h3 {
 	text-align: center;
@@ -15,42 +36,25 @@ h3 {
 	margin-right: 20px;
 }
 
-body {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	height: 100vh;
-	width: 100%;
-	background-color: Moccasin;
-}
-
-footer {
-	margin-top: auto;
-}
-
-main {
-	display: flex;
-	flex-wrap: no-wrap;
-	-webkit-flex-direction: row;
-}
-
 #table {
 	width: 1000px;
 	height: 700px;
-	border: 1px solid #C75050;
+	border: 1px solid #CAEFFB;
 	border-radius: 10px;
-	margin: auto;
-	margin-top: 10%;
-	display: flex;
 	-webkit-flex-wrap: wrap;
 	justify-content: center;
+	align-items: center;
+	background: #CAEFFB;
+}
+
+aside {
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 #joystick {
-	margin-top: auto;
-	margin-left: auto;
-	display: flex;
+	margin: auto;
 	flex-direction: column;
 	align-items: center;
 	gap: 5px;
@@ -62,21 +66,37 @@ button {
 	height: 50px;
 	font-size: 20px;
 	cursor: pointer;
-	border: 1px solid black;
+	border: 1px solid grey;
 	border-radius: 5px;
-	background-color: #aaa;
-	
+	background-color: #CAEFFB;
+}
+
+#start {
+	width: 200px;
+	margin: 20px;
 }
 
 button:hover {
 	background-color: #C75050;
+	color: white;
 }
 
 .color {
 	background-color: #C75050;
 }
 
-.delete {
-	color: #C75050;
+.green {
+	background-color: green;
 }
 
+.blue {
+	background-color: LightBlue;
+}
+
+.white {
+	background-color: white;
+}
+
+.fade {
+	opacity: 30%;
+}

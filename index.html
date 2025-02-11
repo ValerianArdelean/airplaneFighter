@@ -7,31 +7,37 @@
 	<title>AIRPLANE FIGHTER</title>
 	<link rel="stylesheet" href="style.css">
 </head>
-	<body>
-		<header>
-			<h1>AIRPLANE FIGHTER</h1>
-			<h3 id="lives">Score: 0</h2>
-		</header>
+<body class="flex">
+	<header>
+		<h1>AIRPLANE FIGHTER</h1>
+		<h3 id="lives">Score: 0</h2>
+	</header>
 
-		<main>
-			<table id="table">
-			</table>
-			
-			<aside id="joystick">
+	<main class="flex">
+		<table id="table" class="flex">
+		</table>
+		
+		<aside class="flex">
+
+			<div id="joystick" class="flex">
 				<button id="up" onclick="processLines(-1)">▲</button>
 				<div class="middle">
 					<button id="left" onclick="processColumns(-1)">◀</button>
 					<button id="down" onclick="processLines(1)">▼</button>
 					<button id="right" onclick="processColumns(1)">▶</button>
 				</div>
-			</aside>
-		</main>
-		
-		<footer>
-			<p class="text fade">Made with &hearts; by Valerian @ WellCode</p>
-		</footer>
+			</div>
+			
+			<button id="start" onclick="shutBullets();">START</button>
+			
+		</aside>
+	</main>
+	
+	<footer>
+		<p class="text fade">Made with &hearts; by Valerian @ WellCode</p>
+	</footer>
 
-		<script src="script.js" defer ></script>
-	</body>
+	<script src="script.js" defer></script>
+</body>
 </html>
 

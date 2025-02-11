@@ -15,21 +15,6 @@ function createCells() {
 	}
 }
 
-function setScore(){
-	let l = document.getElementById("lives");
-	let sec = 0;
-	let timer = setInterval(function(){
-		if (!gameOver) {
-			return;
-		}
-		l.textContent = "Score: "+sec;
-		++sec;
-		if (sec < 0) {
-			clearInterval(timer);
-		}
-	}, 1000);
-}
-
 createCells();
 
 const LINES = 0;
@@ -67,7 +52,7 @@ function updateCoordinate(axis, n, min, max) {
 }
 
 function processLines(n) {
-	updateCoordinate(LINES, n, 10, 21);
+	updateCoordinate(LINES, n, 11, 20);
 }
 
 function processColumns(n) {
@@ -88,29 +73,44 @@ function handleKeyboardInputs() {
 	});
 }
 
+let l = document.getElementById("lives");
+let countAvoidedBullets = 0;
+
 function shutBullets() {
-	for (let j = 0; j < 100000; ++j) {
-		setTimeout(() => {
-			if (!gameOver) {
-				return;
-			}
-			let boolet = Math.floor(Math.random() * (28 - 11 + 1)) + 11;
-			selectCell(10, boolet).classList.add("color");
-			for (let i = 10; i <= 23; ++i) {
-				setTimeout(() => {
-					selectCell(i, boolet).removeAttribute("class");
+	if (!gameOver) return;
+	let j = 0;
+	let bulletInterval = setInterval(() => {
+		if (!gameOver) {
+			clearInterval(bulletInterval);
+			return;
+		}
+		let boolet = Math.floor(Math.random() * (28 - 11 + 1)) + 11;
+		selectCell(10, boolet).classList.add("color");
+		for (let i = 10; i <= 23; ++i) {
+			setTimeout(() => {
+				for (let j = 10; j <= 29; ++j) {
+					let a = selectCell(23, j);
+					a.classList.add("green");
+					selectCell(10, j).classList.add("blue");
+				}
+				selectCell(i, boolet).removeAttribute("class");
+				if (i + 1 <= 23) {
 					if (selectCell(i + 1, boolet).classList.contains("color")) {
 						gameOver = 0;
+						clearInterval(bulletInterval);
 						return;
 					}
 					selectCell(i + 1, boolet).classList.add("color");
-				}, (i - 10) * 140);
-			}
-		}, j * 400);
-	}
+					if (selectCell(i + 1, boolet).classList.contains("green") && gameOver) {
+						++countAvoidedBullets;
+						l.textContent = `Score: ${countAvoidedBullets}`;
+					}
+				}
+			}, (i - 10) * 140);
+		}
+		++j;
+	}, 400);
 }
 
 drawPlane("add");
-setScore();
-shutBullets();
 handleKeyboardInputs();
