@@ -8,7 +8,6 @@ function createCells() {
 			let cell = document.createElement("div");
 			cell.style.width = "50px";
 			cell.style.height = "50px";
-			//cell.style.border = "1px solid #87CEEB";
 			cell.id = `${i}${j}`;
 			line.appendChild(cell);
 		}
@@ -16,73 +15,83 @@ function createCells() {
 	}
 }
 
+function setScore(){
+	let l = document.getElementById("lives");
+	let sec = 0;
+	let timer = setInterval(function(){
+		if (!gameOver) {
+			return;
+		}
+		l.textContent = "Score: "+sec;
+		++sec;
+		if (sec < 0) {
+			clearInterval(timer);
+		}
+	}, 1000);
+}
+
 createCells();
-let lines = 17;
-let columns = 21;
-let lives = Number(10);
 
-function processLines(n) {
-	if (lives <= 0) {
-		return;
-	}
-	n = parseInt(n);
-	if (lines + n < 21 && lines + n >= 10) {
-		erasePlane();
-		lines += n;
-		drawPlane();
-	}
-}
+const LINES = 0;
+const COLUMNS = 1;
 
-function processColumns(n) {
-	if (lives <= 0) {
-		return;
-	}
-	n = parseInt(n);
-	if (columns + n < 28 && columns + n >= 12) {
-		erasePlane();
-		columns += n;
-		drawPlane();
-	}
-}
+let coordonates = [17, 21];
+let gameOver = 1;
 
 function selectCell(l, c) {
 	return document.getElementById(`${l}` + `${c}`);
 }
 
-function erasePlane() {
+function drawPlane(status) {
 	for (let i = 0; i <= 3; ++i) {
-		selectCell(lines + i, columns).removeAttribute("class");
+		selectCell(coordonates[LINES] + i, coordonates[COLUMNS]).classList[status]("color");
 	}
-	for (let i = columns - 2; i <= columns + 2; ++i) {
-		selectCell(lines + 1, i).removeAttribute("class");
-		if (i > columns - 2 && i < columns + 2) {
-			selectCell(lines + 3, i).removeAttribute("class");
+	for (let i = coordonates[COLUMNS] - 2; i <= coordonates[COLUMNS] + 2; ++i) {
+		selectCell(coordonates[LINES] + 1, i).classList[status]("color");
+		if (i > coordonates[COLUMNS] - 2 && i < coordonates[COLUMNS] + 2) {
+			selectCell(coordonates[LINES] + 3, i).classList[status]("color");
 		}
 	}
 }
 
-function drawPlane() {
-	for (let i = 0; i <= 3; ++i) {
-		selectCell(lines + i, columns).classList.add("color");
+function updateCoordinate(axis, n, min, max) {
+	if (!gameOver || !n) {
+		return;
 	}
-	for (let i = columns - 2; i <= columns + 2; ++i) {
-		selectCell(lines + 1, i).classList.add("color");
-		if (i > columns - 2 && i < columns + 2) {
-			selectCell(lines + 3, i).classList.add("color");
-		}
+	n = parseInt(n);
+	if (coordonates[axis] + n >= min && coordonates[axis] + n < max) {
+		drawPlane("remove");
+		coordonates[axis] += n;
+		drawPlane("add");
 	}
 }
 
-let l = document.getElementById("lives");
-l.innerHTML = `lives: ${lives}`;
+function processLines(n) {
+	updateCoordinate(LINES, n, 10, 21);
+}
 
-drawPlane();
+function processColumns(n) {
+	updateCoordinate(COLUMNS, n, 12, 28);
+}
 
-function bullets() {
+function handleKeyboardInputs() {
+	document.addEventListener('keydown', function(event) {
+		if (event.key === 'ArrowLeft') {
+			processColumns(-1);
+		} else if (event.key === 'ArrowRight') {
+			processColumns(1);
+		} else if (event.key === 'ArrowUp') {
+			processLines(-1);
+		} else if (event.key === 'ArrowDown') {
+			processLines(1);
+		}
+	});
+}
+
+function shutBullets() {
 	for (let j = 0; j < 100000; ++j) {
 		setTimeout(() => {
-			if (lives <= 0) {
-				l.innerHTML = "GAME OVER!";
+			if (!gameOver) {
 				return;
 			}
 			let boolet = Math.floor(Math.random() * (28 - 11 + 1)) + 11;
@@ -91,8 +100,8 @@ function bullets() {
 				setTimeout(() => {
 					selectCell(i, boolet).removeAttribute("class");
 					if (selectCell(i + 1, boolet).classList.contains("color")) {
-						--lives;
-						l.innerHTML = `lives: ${lives}`;
+						gameOver = 0;
+						return;
 					}
 					selectCell(i + 1, boolet).classList.add("color");
 				}, (i - 10) * 140);
@@ -100,16 +109,8 @@ function bullets() {
 		}, j * 400);
 	}
 }
-bullets();
 
-document.addEventListener('keydown', function(event) {
-	if(event.keyCode == 37) {
-		processColumns(-1);
-	} else if(event.keyCode == 39) {
-		processColumns(1);
-	} else if (event.keyCode == 38) {
-		processLines(-1)
-	} else if (event.keyCode == 40) {
-		processLines(1)
-	}
-});
+drawPlane("add");
+setScore();
+shutBullets();
+handleKeyboardInputs();
