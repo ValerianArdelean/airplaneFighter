@@ -1,6 +1,7 @@
 function createCells() {
 	let table = document.getElementById("table");
 	for (let i = 10; i < 24; ++i) {
+
 		let line = document.createElement("div");
 		line.style.display = "flex";
 		line.id = `${i}`;
@@ -9,6 +10,16 @@ function createCells() {
 			cell.style.width = "50px";
 			cell.style.height = "50px";
 			cell.id = `${i}${j}`;
+			if (i == 10) {
+				cell.classList.add("blue");
+			} else if (i == 29) {
+				cell.classList.add("green");
+			}
+			if (i == 10) {
+				cell.classList.add("blue");
+			} else if (i == 23) {
+				cell.classList.add("green");
+			}
 			line.appendChild(cell);
 		}
 		table.appendChild(line);
