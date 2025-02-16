@@ -76,8 +76,9 @@ function handleKeyboardInputs() {
 	});
 }
 
+
 let l = document.getElementById("lives");
-let countAvoidedBullets = 0;
+l.textContent = "SCORE: 0";
 
 function shutBullets() {
 	let bulletInterval = setInterval(() => {
@@ -88,13 +89,7 @@ function shutBullets() {
 
 		let boolet = Math.floor(Math.random() * (28 - 11 + 1)) + 11;
 		let i = 10;
-
 		let bullets = setInterval(() => {
-			if (!gameOver) {
-				clearInterval(bullets);
-				return;
-			}
-
 			let currentCell = selectCell(i, boolet);
 			let nextCell = i + 1 <= 23 ? selectCell(i + 1, boolet) : null;
 
@@ -102,27 +97,42 @@ function shutBullets() {
 				currentCell.classList.remove("color");
 			}
 
-			// ✅ Ensure the bullet isn't destroyed before adding "color"
-			if (nextCell && !nextCell.classList.contains("boolet")) {
+			// ✅ If an enemy bullet is destroyed by player bullet, remove it
+			if (nextCell && nextCell.classList.contains("boolet")) {
+				nextCell.classList.remove("boolet");
+				clearInterval(bullets); // Stop the enemy bullet
+				return;
+			}
+
+			// ✅ Collision: If bullet hits player's plane, game over
+			if (nextCell && nextCell.classList.contains("color")) {
+				gameOver = 0;
+				clearInterval(bullets);
+				clearInterval(bulletInterval);
+				nextCell.classList.add("explosion");
+				nextCell.innerHTML = "💥";
+				return;
+			}
+
+			// ✅ Move enemy bullet downward
+			if (nextCell) {
 				nextCell.classList.add("color");
 			}
 
-			// ✅ If the bullet hits a "green" zone (safe area), increase score
-			if (nextCell && nextCell.classList.contains("green") && gameOver) {
+			/*
+			if (nextCell && nextCell.classList.contains("green")) {
 				++countAvoidedBullets;
 				l.textContent = `Score: ${countAvoidedBullets}`;
-			}
+			}*/
 
-			// ✅ Stop bullets when reaching last row
-			++i;
+			// ✅ Stop bullet at the last row
+			i++;
 			if (i > 23) {
 				clearInterval(bullets);
 			}
 		}, 200);
 	}, 400);
 }
-
-
 
 let hits = 0;
 
@@ -137,12 +147,15 @@ function fire() {
 
 		let boolet = selectCell(i, j);
 
-		// ✅ If it hits an enemy bullet, destroy it and stop moving
+		// ✅ If player's bullet hits an enemy bullet, destroy both
 		if (boolet.classList.contains("color")) {
 			boolet.classList.remove("color"); // Remove enemy bullet
-			clearInterval(bulletInterval);
-			++hits;
-			l.textContent = `HITS: ${hits}`;
+			boolet.classList.remove("boolet"); // Remove player's bullet
+			
+			++hits; // ✅ Increment score before stopping interval
+			l.textContent = `SCORE: ${hits}`;
+			
+			clearInterval(bulletInterval); // Stop the bullet movement
 			return;
 		}
 
@@ -154,10 +167,6 @@ function fire() {
 		--i;
 	}, 30);
 }
-
-
-
-
 
 drawPlane("add");
 handleKeyboardInputs();

@@ -108,3 +108,23 @@ button:hover {
 .fade {
 	opacity: 30%;
 }
+
+.explosion {
+	font-size: 40px; /* Make it visible */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	animation: fadeIn 0.5s ease-in forwards;
+	background: #CAEFFB;
+}
+
+/* Smooth fade-in effect */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
