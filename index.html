@@ -14,10 +14,13 @@
 	</header>
 
 	<main class="flex">
-		<table id="table" class="flex">
+		<table id="table" class="flex sky">
 		</table>
 		
 		<aside class="flex">
+			<form>
+				<button id="restart">RESTART</button>
+			</form>
 
 			<div id="joystick" class="flex">
 				<button id="up" onclick="processLines(-1)">▲</button>
@@ -28,9 +31,9 @@
 				</div>
 			</div>
 			
-			<button id="start" onclick="shutBullets();">START</button>
+			<button id="start" onclick="shutBullets();">START GAME</button>
 			
-			<button id="start" onclick="fire();">FIRE</button>
+			<button id="fire" onclick="fire();">FIRE</button>
 		</aside>
 	</main>
 	

@@ -44,6 +44,9 @@ h3 {
 	-webkit-flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
+}
+
+.sky {
 	background: #CAEFFB;
 }
 
@@ -71,7 +74,7 @@ button {
 	background-color: #CAEFFB;
 }
 
-#start {
+#start, #restart, #fire {
 	width: 200px;
 	margin: 20px;
 }
@@ -95,6 +98,11 @@ button:hover {
 
 .white {
 	background-color: white;
+}
+
+.boolet {
+	background: linear-gradient(to right, transparent 40%, black 40%, black 60%, transparent 60%);
+	border-radius: 50%;
 }
 
 .fade {
