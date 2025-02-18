@@ -49,7 +49,7 @@ function drawPlane(status) {
 	}
 }
 
-function updateCoordinate(axis, n, min, max) {
+function updateCoordinates(axis, n, min, max) {
 	n = parseInt(n);
 	if (game.coordinates[axis] + n > min && game.coordinates[axis] + n < max && game.gameOver && n) {
 		drawPlane("remove");
@@ -59,11 +59,11 @@ function updateCoordinate(axis, n, min, max) {
 }
 
 function processLines(n) {
-	updateCoordinate(LINES, n, TOP_BOUNDARY, BOTTOM_BOUNDARY - PLANE_HEIGHT + 1);
+	updateCoordinates(LINES, n, TOP_BOUNDARY, BOTTOM_BOUNDARY - PLANE_HEIGHT + 1);
 }
 
 function processColumns(n) {
-	updateCoordinate(COLUMNS, n, TOP_BOUNDARY + 1, WIDTH - 1);
+	updateCoordinates(COLUMNS, n, TOP_BOUNDARY + 1, WIDTH - 1);
 }
 
 function handleKeyboardInputs() {
@@ -112,7 +112,7 @@ function incomingObjects() {
 			if (nextCell) {
 				nextCell.classList.add("color");
 			}
-			/*implementarea pentru bonus 1
+			/*implementation for bonus 1
 			if (nextCell && nextCell.classList.contains("green")) {
 				++countAvoidedBullets;
 				l.textContent = `Score: ${countAvoidedBullets}`;
