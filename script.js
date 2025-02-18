@@ -1,17 +1,30 @@
+const TOP_BOUNDARY = 10;
+const BOTTOM_BOUNDARY = 23;
+const WIDTH = 29;
+const PLANE_HEIGHT = 4;
+const LINES = 0;
+const COLUMNS = 1;
+
+let game = {
+	hits: 0,
+	gameOver: true,
+	coordinates: [17, 21],
+	scoreDisplay: document.getElementById("score")
+}
+
 function createCells() {
 	let table = document.getElementById("table");
-	for (let i = 10; i < 24; ++i) {
+	for (let i = TOP_BOUNDARY; i <= BOTTOM_BOUNDARY; ++i) {
 		let line = document.createElement("div");
 		line.classList.add("flex");
 		line.id = `${i}`;
-		for (let j = 10; j < 30; ++j) {
+		for (let j = TOP_BOUNDARY; j <= WIDTH; ++j) {
 			let cell = document.createElement("div");
-			cell.style.width = "50px";
-			cell.style.height = "50px";
+			cell.classList.add("cell");
 			cell.id = `${i}${j}`;
-			if (i == 10) {
+			if (i == TOP_BOUNDARY) {
 				cell.classList.add("blue");
-			} else if (i == 23) {
+			} else if (i == BOTTOM_BOUNDARY) {
 				cell.classList.add("green");
 			}
 			line.appendChild(cell);
@@ -20,46 +33,37 @@ function createCells() {
 	}
 }
 
-createCells();
-
-const LINES = 0;
-const COLUMNS = 1;
-
-let coordonates = [17, 21];
-let gameOver = 1;
-let hit = 0;
-
-function selectCell(l, c) {
-	return document.getElementById(`${l}` + `${c}`);
+function selectCell(line, column) {
+	return document.getElementById(`${line}` + `${column}`);
 }
 
 function drawPlane(status) {
-	for (let i = 0; i <= 3; ++i) {
-		selectCell(coordonates[LINES] + i, coordonates[COLUMNS]).classList[status]("color");
+	for (let i = 0; i < PLANE_HEIGHT ; ++i) {
+		selectCell(game.coordinates[LINES] + i, game.coordinates[COLUMNS]).classList[status]("color");
 	}
-	for (let i = coordonates[COLUMNS] - 2; i <= coordonates[COLUMNS] + 2; ++i) {
-		selectCell(coordonates[LINES] + 1, i).classList[status]("color");
-		if (i > coordonates[COLUMNS] - 2 && i < coordonates[COLUMNS] + 2) {
-			selectCell(coordonates[LINES] + 3, i).classList[status]("color");
+	for (let i = game.coordinates[COLUMNS] - 2; i <= game.coordinates[COLUMNS] + 2; ++i) {
+		selectCell(game.coordinates[LINES] + 1, i).classList[status]("color");
+		if (i > game.coordinates[COLUMNS] - 2 && i < game.coordinates[COLUMNS] + 2) {
+			selectCell(game.coordinates[LINES] + 3, i).classList[status]("color");
 		}
 	}
 }
 
 function updateCoordinate(axis, n, min, max) {
 	n = parseInt(n);
-	if (coordonates[axis] + n >= min && coordonates[axis] + n < max && gameOver && n) {
+	if (game.coordinates[axis] + n > min && game.coordinates[axis] + n < max && game.gameOver && n) {
 		drawPlane("remove");
-		coordonates[axis] += n;
+		game.coordinates[axis] += n;
 		drawPlane("add");
 	}
 }
 
 function processLines(n) {
-	updateCoordinate(LINES, n, 11, 20);
+	updateCoordinate(LINES, n, TOP_BOUNDARY, BOTTOM_BOUNDARY - PLANE_HEIGHT + 1);
 }
 
 function processColumns(n) {
-	updateCoordinate(COLUMNS, n, 12, 28);
+	updateCoordinate(COLUMNS, n, TOP_BOUNDARY + 1, WIDTH - 1);
 }
 
 function handleKeyboardInputs() {
@@ -76,97 +80,76 @@ function handleKeyboardInputs() {
 	});
 }
 
-
-let l = document.getElementById("lives");
-l.textContent = "SCORE: 0";
-
-function shutBullets() {
-	let bulletInterval = setInterval(() => {
-		if (!gameOver) {
-			clearInterval(bulletInterval);
+function incomingObjects() {
+	const OBJECT_SPEED = 200;
+	const OBJECT_INTERVAL = 400;
+	let objectsInterval = setInterval(() => {
+		if (!game.gameOver) {
+			clearInterval(objectsInterval);
 			return;
 		}
-
-		let boolet = Math.floor(Math.random() * (28 - 11 + 1)) + 11;
-		let i = 10;
-		let bullets = setInterval(() => {
-			let currentCell = selectCell(i, boolet);
-			let nextCell = i + 1 <= 23 ? selectCell(i + 1, boolet) : null;
-
+		let object = Math.floor(Math.random() * (WIDTH - TOP_BOUNDARY - 1)) + TOP_BOUNDARY + 1;
+		let i = TOP_BOUNDARY;
+		let objects = setInterval(() => {
+			let currentCell = selectCell(i, object);
+			let nextCell = i + 1 <= BOTTOM_BOUNDARY ? selectCell(i + 1, object) : null;
 			if (currentCell) {
 				currentCell.classList.remove("color");
 			}
-
-			// ✅ If an enemy bullet is destroyed by player bullet, remove it
 			if (nextCell && nextCell.classList.contains("boolet")) {
 				nextCell.classList.remove("boolet");
-				clearInterval(bullets); // Stop the enemy bullet
+				clearInterval(objects);
 				return;
 			}
-
-			// ✅ Collision: If bullet hits player's plane, game over
 			if (nextCell && nextCell.classList.contains("color")) {
-				gameOver = 0;
-				clearInterval(bullets);
-				clearInterval(bulletInterval);
+				game.gameOver = false;
+				clearInterval(objects);
+				clearInterval(objectsInterval);
 				nextCell.classList.add("explosion");
 				nextCell.innerHTML = "💥";
 				return;
 			}
-
-			// ✅ Move enemy bullet downward
 			if (nextCell) {
 				nextCell.classList.add("color");
 			}
-
-			/*
+			/*implementarea pentru bonus 1
 			if (nextCell && nextCell.classList.contains("green")) {
 				++countAvoidedBullets;
 				l.textContent = `Score: ${countAvoidedBullets}`;
 			}*/
-
-			// ✅ Stop bullet at the last row
-			i++;
-			if (i > 23) {
-				clearInterval(bullets);
+			++i;
+			if (i > BOTTOM_BOUNDARY) {
+				clearInterval(objects);
 			}
-		}, 200);
-	}, 400);
+		}, OBJECT_SPEED);
+	}, OBJECT_INTERVAL);
 }
-
-let hits = 0;
 
 function fire() {
-	let i = coordonates[LINES] - 1, j = coordonates[COLUMNS];
-	let bulletInterval = setInterval(() => {
-		if (i < 10) {
-			clearInterval(bulletInterval);
-			selectCell(10, j).classList.remove("boolet");
+	const BOOLET_SPEED = 30;
+	let line = game.coordinates[LINES] - 1,  column = game.coordinates[COLUMNS];
+	let booletInterval = setInterval(() => {
+		if (line < TOP_BOUNDARY) {
+			clearInterval(booletInterval);
+			selectCell(TOP_BOUNDARY, column).classList.remove("boolet");
 			return;
 		}
-
-		let boolet = selectCell(i, j);
-
-		// ✅ If player's bullet hits an enemy bullet, destroy both
+		let boolet = selectCell(line, column);
 		if (boolet.classList.contains("color")) {
-			boolet.classList.remove("color"); // Remove enemy bullet
-			boolet.classList.remove("boolet"); // Remove player's bullet
-			
-			++hits; // ✅ Increment score before stopping interval
-			l.textContent = `SCORE: ${hits}`;
-			
-			clearInterval(bulletInterval); // Stop the bullet movement
+			boolet.classList.remove("color", "boolet");
+			clearInterval(booletInterval);
+			++game.hits;
+			game.scoreDisplay.textContent = `SCORE: ${game.hits}`;
 			return;
 		}
-
-		// Move the fired bullet upwards
 		boolet.classList.add("boolet");
-		if (i < coordonates[LINES] - 1) {
-			selectCell(i + 1, j).classList.remove("boolet");
+		if (line < game.coordinates[LINES] - 1) {
+			selectCell(line + 1, column).classList.remove("boolet");
 		}
-		--i;
-	}, 30);
+		--line;
+	}, BOOLET_SPEED);
 }
 
+createCells();
 drawPlane("add");
 handleKeyboardInputs();
