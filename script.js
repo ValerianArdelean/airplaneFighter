@@ -126,7 +126,7 @@ function incomingObjects() {
 }
 
 function fire() {
-	const BOOLET_SPEED = 30;
+	const BULLET_SPEED = 30;
 	let line = game.coordinates[LINES] - 1,  column = game.coordinates[COLUMNS];
 	let booletInterval = setInterval(() => {
 		if (line < TOP_BOUNDARY) {
@@ -147,7 +147,7 @@ function fire() {
 			selectCell(line + 1, column).classList.remove("boolet");
 		}
 		--line;
-	}, BOOLET_SPEED);
+	}, BULLET_SPEED);
 }
 
 createCells();
